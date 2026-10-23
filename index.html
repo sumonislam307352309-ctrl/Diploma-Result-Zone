@@ -7,643 +7,392 @@
   <meta name="description" content="Diploma Result Zone - ডিপ্লোমা শিক্ষার্থীদের পরীক্ষার ফলাফল দেখুন সহজেই">
   <title>Diploma Result Zone</title>
   <style>
-    :root {
-      --brand: #0f766e;
-      --brand2: #115e59;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --line: #e2e8f0;
-      --danger: #dc2626;
-      --success: #16a34a;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: system-ui, -apple-system, "Noto Sans Bengali", "Segoe UI", sans-serif;
-      line-height: 1.55;
-      min-height: 100vh;
-    }
-    header {
-      background: linear-gradient(135deg, var(--brand2), var(--brand));
-      color: #fff;
-      padding: 28px 16px 24px;
-      text-align: center;
-    }
-    header h1 { font-size: clamp(1.5rem, 5vw, 2.1rem); margin-bottom: 6px; }
-    header p { color: #ccfbf1; font-size: 0.95rem; }
-    main { max-width: 920px; margin: 0 auto; padding: 18px 14px 50px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    button, .tab {
-      border: 0;
-      border-radius: 10px;
-      padding: 11px 16px;
-      background: var(--brand);
-      color: white;
-      font: inherit;
-      font-weight: 650;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-    button:hover { filter: brightness(0.95); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    button.secondary, .tab.secondary { background: #e2e8f0; color: #1e293b; }
-    button.danger { background: var(--danger); }
-    .panel {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-    }
-    h2 { font-size: 1.2rem; margin-bottom: 14px; }
-    h3 { font-size: 1.05rem; margin: 18px 0 10px; }
-    label { display: block; font-weight: 650; margin: 12px 0 5px; font-size: 0.92rem; }
-    input, select, textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      font: inherit;
-      background: #fff;
-      color: var(--ink);
-    }
-    input:focus, select:focus, textarea:focus {
-      outline: 2px solid var(--brand);
-      border-color: transparent;
-    }
-    textarea { min-height: 160px; resize: vertical; font-family: ui-monospace, monospace; font-size: 0.88rem; }
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-    .muted { color: var(--muted); font-size: 0.9rem; }
-    .status {
-      margin-top: 12px;
-      padding: 11px 14px;
-      background: #f1f5f9;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      font-size: 0.92rem;
-    }
-    .status.error { background: #fef2f2; color: var(--danger); }
-    .status.success { background: #f0fdf4; color: var(--success); }
-    .hidden { display: none !important; }
-    .result-card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 18px;
-      margin-top: 14px;
-      background: #fff;
-    }
-    .result-card h3 { margin: 0 0 6px; font-size: 1.25rem; }
-    .pill {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 3px 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-right: 6px;
-      margin-bottom: 6px;
-    }
-    .pill.pass { background: #dcfce7; color: #166534; }
-    .pill.fail { background: #fee2e2; color: #991b1b; }
-    .gpa-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 8px;
-      margin: 14px 0;
-    }
-    .gpa-box {
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 8px;
-      text-align: center;
-    }
-    .gpa-box .label { font-size: 0.75rem; color: var(--muted); }
-    .gpa-box .value { font-size: 1.15rem; font-weight: 700; color: var(--brand2); }
-    .gpa-box .value.ref { color: var(--danger); font-size: 0.95rem; }
-    .ref-list { margin-top: 10px; }
-    .ref-list span {
-      display: inline-block;
-      background: #fee2e2;
-      color: #991b1b;
-      border-radius: 6px;
-      padding: 3px 8px;
-      margin: 3px 4px 3px 0;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    .table-wrap { overflow-x: auto; margin-top: 12px; }
-    table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
-    th, td { border-bottom: 1px solid var(--line); padding: 10px 8px; text-align: left; }
-    th { background: #f8fafc; font-weight: 650; }
-    footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.85rem;
-      padding: 20px 12px;
-      border-top: 1px solid var(--line);
-      margin-top: 20px;
-    }
-    @media (max-width: 620px) {
-      .grid { grid-template-columns: 1fr; }
-      .panel { padding: 16px; }
-      .tabs button { flex: 1; }
-      header { padding: 22px 12px; }
-    }
+    :root{--brand:#0f766e;--brand2:#115e59;--bg:#f1f5f9;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#dc2626;--success:#16a34a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali","Segoe UI",sans-serif;line-height:1.55;min-height:100vh}
+    header{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff;padding:28px 16px 24px;text-align:center}
+    header h1{font-size:clamp(1.5rem,5vw,2.1rem);margin-bottom:6px}
+    header p{color:#ccfbf1;font-size:.95rem}
+    main{max-width:920px;margin:0 auto;padding:18px 14px 50px}
+    .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+    button,.tab{border:0;border-radius:10px;padding:11px 16px;background:var(--brand);color:#fff;font:inherit;font-weight:650;cursor:pointer;transition:.15s}
+    button:hover{filter:brightness(.95)}button:disabled{opacity:.6;cursor:not-allowed}
+    button.secondary,.tab.secondary{background:#e2e8f0;color:#1e293b}button.danger{background:var(--danger)}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 4px 20px rgba(15,23,42,.06)}
+    h2{font-size:1.2rem;margin-bottom:14px}h3{font-size:1.05rem;margin:18px 0 10px}
+    label{display:block;font-weight:650;margin:12px 0 5px;font-size:.92rem}
+    input,select,textarea{width:100%;padding:12px 14px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff;color:var(--ink)}
+    input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);border-color:transparent}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .muted{color:var(--muted);font-size:.9rem}
+    .status{margin-top:12px;padding:11px 14px;background:#f1f5f9;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.92rem}
+    .status.error{background:#fef2f2;color:var(--danger)}.status.success{background:#f0fdf4;color:var(--success)}
+    .hidden{display:none!important}
+    .result-card{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px;background:#fff}
+    .result-card h3{margin:0 0 6px;font-size:1.25rem}
+    .pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:.82rem;font-weight:700;margin-right:6px;margin-bottom:6px}
+    .pill.pass{background:#dcfce7;color:#166534}.pill.fail{background:#fee2e2;color:#991b1b}
+    .gpa-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin:14px 0}
+    .gpa-box{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center}
+    .gpa-box .label{font-size:.75rem;color:var(--muted)}.gpa-box .value{font-size:1.15rem;font-weight:700;color:var(--brand2)}
+    .gpa-box .value.ref{color:var(--danger);font-size:.95rem}
+    .ref-list{margin-top:10px}.ref-list span{display:inline-block;background:#fee2e2;color:#991b1b;border-radius:6px;padding:3px 8px;margin:3px 4px 3px 0;font-size:.85rem;font-weight:600}
+    .table-wrap{overflow-x:auto;margin-top:12px}table{border-collapse:collapse;width:100%;font-size:.9rem}
+    th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}th{background:#f8fafc;font-weight:650}
+    footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px 12px;border-top:1px solid var(--line);margin-top:20px}
+    .file-info{margin-top:8px;padding:10px 12px;background:#f0fdf4;border-radius:8px;font-size:.9rem;color:var(--success)}
+    @media(max-width:620px){.grid{grid-template-columns:1fr}.panel{padding:16px}.tabs button{flex:1}header{padding:22px 12px}}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Diploma Result Zone</h1>
-    <p>ডিপ্লোমা শিক্ষার্থীদের ফলাফল খুঁজুন সহজেই</p>
-  </header>
+<header>
+  <h1>Diploma Result Zone</h1>
+  <p>ডিপ্লোমা শিক্ষার্থীদের ফলাফল খুঁজুন সহজেই</p>
+</header>
+<main>
+  <div class="tabs">
+    <button id="studentTab" type="button">ফলাফল দেখুন</button>
+    <button id="adminTab" class="secondary" type="button">Admin Panel</button>
+  </div>
 
-  <main>
-    <div class="tabs">
-      <button id="studentTab" type="button">ফলাফল দেখুন</button>
-      <button id="adminTab" class="secondary" type="button">Admin Panel</button>
+  <section id="studentPanel" class="panel">
+    <h2>শিক্ষার্থীর ফলাফল অনুসন্ধান</h2>
+    <div class="grid">
+      <div>
+        <label for="examSelect">পরীক্ষা নির্বাচন</label>
+        <select id="examSelect"><option value="">পরীক্ষার তালিকা লোড হচ্ছে...</option></select>
+      </div>
+      <div>
+        <label for="rollInput">রোল নম্বর</label>
+        <input id="rollInput" inputmode="numeric" placeholder="যেমন: 700319" autocomplete="off">
+      </div>
+    </div>
+    <div class="actions"><button id="searchBtn" type="button">ফলাফল খুঁজুন</button></div>
+    <div id="studentStatus" class="status">ফলাফল দেখতে পরীক্ষা ও রোল নম্বর দিন।</div>
+    <div id="resultArea"></div>
+  </section>
+
+  <section id="adminPanel" class="panel hidden">
+    <h2>Admin Panel</h2>
+    <div id="loginArea">
+      <p class="muted">শুধু অনুমোদিত অ্যাডমিন অ্যাকাউন্ট দিয়ে লগইন করুন।</p>
+      <label for="adminEmail">Admin Email</label>
+      <input id="adminEmail" type="email" autocomplete="username" placeholder="admin@example.com">
+      <label for="adminPassword">Password</label>
+      <input id="adminPassword" type="password" autocomplete="current-password" placeholder="পাসওয়ার্ড">
+      <div class="actions"><button id="loginBtn" type="button">লগইন</button></div>
+      <div id="loginStatus" class="status hidden"></div>
     </div>
 
-    <!-- STUDENT PANEL -->
-    <section id="studentPanel" class="panel">
-      <h2>শিক্ষার্থীর ফলাফল অনুসন্ধান</h2>
+    <div id="adminTools" class="hidden">
+      <p class="muted">লগইন হয়েছে। নিচে পরীক্ষা ও ফলাফল যোগ করুন।</p>
       <div class="grid">
         <div>
-          <label for="examSelect">পরীক্ষা নির্বাচন</label>
-          <select id="examSelect">
-            <option value="">পরীক্ষার তালিকা লোড হচ্ছে...</option>
-          </select>
+          <label for="examId">পরীক্ষার ID (ইংরেজি)</label>
+          <input id="examId" placeholder="যেমন: 6th-2022-2026">
         </div>
         <div>
-          <label for="rollInput">রোল নম্বর</label>
-          <input id="rollInput" inputmode="numeric" placeholder="যেমন: 700319" autocomplete="off">
+          <label for="examTitle">পরীক্ষার নাম</label>
+          <input id="examTitle" placeholder="যেমন: 6th Semester (2022 Regulation) 2026">
         </div>
       </div>
+
+      <label for="pdfLink">রেজাল্ট PDF-এর Google Drive লিংক (ঐচ্ছিক)</label>
+      <input id="pdfLink" type="url" placeholder="https://drive.google.com/file/d/xxxxx/view">
+
+      <label for="excelFile">Excel / CSV ফাইল আপলোড করুন</label>
+      <input id="excelFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+      <div id="fileInfo" class="file-info hidden"></div>
+      <p class="muted" style="margin-top:8px">
+        কলাম থাকতে হবে: <b>roll, institute, status, gpa1, gpa2, gpa3, gpa4, gpa5, gpa6, gpa7, gpa8, ref_subjects</b><br>
+        ref_subjects এ কমা দিয়ে লিখুন (যেমন: 26464(T), 27061(T))
+      </p>
+
       <div class="actions">
-        <button id="searchBtn" type="button">ফলাফল খুঁজুন</button>
+        <button id="saveBtn" type="button">পরীক্ষা ও ফলাফল সেভ করুন</button>
+        <button id="refreshBtn" class="secondary" type="button">তালিকা রিফ্রেশ</button>
+        <button id="logoutBtn" class="secondary" type="button">লগআউট</button>
       </div>
-      <div id="studentStatus" class="status">ফলাফল দেখতে পরীক্ষা ও রোল নম্বর দিন।</div>
-      <div id="resultArea"></div>
-    </section>
+      <div id="adminStatus" class="status">Admin কাজের জন্য প্রস্তুত।</div>
 
-    <!-- ADMIN PANEL -->
-    <section id="adminPanel" class="panel hidden">
-      <h2>Admin Panel</h2>
+      <h3>সেভ করা পরীক্ষা সমূহ</h3>
+      <div id="examList" class="table-wrap"><p class="muted">তালিকা লোড হচ্ছে...</p></div>
+    </div>
+  </section>
 
-      <div id="loginArea">
-        <p class="muted">শুধু অনুমোদিত অ্যাডমিন অ্যাকাউন্ট দিয়ে লগইন করুন।</p>
-        <label for="adminEmail">Admin Email</label>
-        <input id="adminEmail" type="email" autocomplete="username" placeholder="admin@example.com">
-        <label for="adminPassword">Password</label>
-        <input id="adminPassword" type="password" autocomplete="current-password" placeholder="পাসওয়ার্ড">
-        <div class="actions">
-          <button id="loginBtn" type="button">লগইন</button>
-        </div>
-        <div id="loginStatus" class="status hidden"></div>
-      </div>
+  <footer>Diploma Result Zone · ফলাফলের নির্ভুলতা বাংলাদেশ কারিগরি শিক্ষা বোর্ডের প্রকাশিত তথ্য দিয়ে যাচাই করুন।</footer>
+</main>
 
-      <div id="adminTools" class="hidden">
-        <p class="muted">লগইন হয়েছে। নিচে পরীক্ষা ও ফলাফল যোগ/এডিট করুন।</p>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-        <div class="grid">
-          <div>
-            <label for="examId">পরীক্ষার ID (ইংরেজি)</label>
-            <input id="examId" placeholder="যেমন: 6th-2022-2026">
-          </div>
-          <div>
-            <label for="examTitle">পরীক্ষার নাম</label>
-            <input id="examTitle" placeholder="যেমন: 6th Semester (2022 Regulation) 2026">
-          </div>
-        </div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeLFZNpqju4QZ360HRIisSxA8BMU-iO4k",
+    authDomain: "bteb-result-diploma.firebaseapp.com",
+    databaseURL: "https://bteb-result-diploma-default-rtdb.firebaseio.com",
+    projectId: "bteb-result-diploma",
+    storageBucket: "bteb-result-diploma.firebasestorage.app",
+    messagingSenderId: "682124730413",
+    appId: "1:682124730413:web:149bbb59bba5cb6db5d8a4"
+  };
+  const ADMIN_UID = "X0BeX1mtLTWGvKcy35jtCnltiS82";
 
-        <label for="pdfLink">রেজাল্ট PDF-এর Google Drive লিংক (ঐচ্ছিক)</label>
-        <input id="pdfLink" type="url" placeholder="https://drive.google.com/file/d/xxxxx/view">
-        <p class="muted" style="margin-top:6px">
-          Google Drive-এ PDF আপলোড করে “Anyone with the link” করে লিংক দাও।
-        </p>
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  const $ = id => document.getElementById(id);
+  let parsedRecords = [];
 
-        <label for="jsonInput">ফলাফলের JSON ডেটা</label>
-        <textarea id="jsonInput" spellcheck="false" placeholder='[
-  {
-    "roll": "700319",
-    "name": "",
-    "institute": "Thakurgaon Polytechnic Institute",
-    "status": "Passed",
-    "gpa": { "1": 3.23, "2": 3.47, "3": 3.51, "4": 3.66, "5": 3.64, "6": 3.54 },
-    "ref_subjects": []
-  },
-  {
-    "roll": "700213",
-    "institute": "Thakurgaon Polytechnic Institute",
-    "status": "Referred",
-    "gpa": { "1": 3.14, "2": 2.76, "3": 3.06, "4": 2.79, "5": 3.17, "6": "ref" },
-    "ref_subjects": ["26464(T)"]
+  function showStatus(id, msg, type="") {
+    const el = $(id);
+    el.textContent = msg;
+    el.classList.remove("error","success","hidden");
+    if (type) el.classList.add(type);
   }
-]'></textarea>
-        <p class="muted" style="margin-top:8px">
-          প্রতিটি রেকর্ডে <b>roll</b> থাকতে হবে। status = "Passed" বা "Referred"। 
-          gpa অবজেক্টে সেমিস্টার নম্বর দাও। ref_subjects অ্যারেতে সাবজেক্ট কোড দাও।
-        </p>
+  function safeText(v){ return v==null||v===""?"—":String(v); }
 
-        <div class="actions">
-          <button id="saveBtn" type="button">পরীক্ষা ও ফলাফল সেভ করুন</button>
-          <button id="refreshBtn" class="secondary" type="button">তালিকা রিফ্রেশ</button>
-          <button id="logoutBtn" class="secondary" type="button">লগআউট</button>
-        </div>
-        <div id="adminStatus" class="status">Admin কাজের জন্য প্রস্তুত।</div>
+  function setActiveTab(w){
+    $("studentPanel").classList.toggle("hidden", w!=="student");
+    $("adminPanel").classList.toggle("hidden", w!=="admin");
+    $("studentTab").classList.toggle("secondary", w!=="student");
+    $("adminTab").classList.toggle("secondary", w!=="admin");
+  }
+  $("studentTab").onclick = () => setActiveTab("student");
+  $("adminTab").onclick = () => setActiveTab("admin");
 
-        <h3>সেভ করা পরীক্ষা সমূহ</h3>
-        <div id="examList" class="table-wrap">
-          <p class="muted">এখনও কোনো পরীক্ষা নেই।</p>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      Diploma Result Zone · ফলাফলের নির্ভুলতা বাংলাদেশ কারিগরি শিক্ষা বোর্ডের প্রকাশিত তথ্য দিয়ে যাচাই করুন।
-    </footer>
-  </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDeLFZNpqju4QZ360HRIisSxA8BMU-iO4k",
-      authDomain: "bteb-result-diploma.firebaseapp.com",
-      databaseURL: "https://bteb-result-diploma-default-rtdb.firebaseio.com",
-      projectId: "bteb-result-diploma",
-      storageBucket: "bteb-result-diploma.firebasestorage.app",
-      messagingSenderId: "682124730413",
-      appId: "1:682124730413:web:149bbb59bba5cb6db5d8a4"
-    };
-
-    const ADMIN_UID = "X0BeX1mtLTWGvKcy35jtCnltiS82";
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    const $ = (id) => document.getElementById(id);
-
-    function showStatus(id, message, type = "") {
-      const el = $(id);
-      el.textContent = message;
-      el.classList.remove("error", "success", "hidden");
-      if (type) el.classList.add(type);
-    }
-
-    function safeText(v) {
-      return v == null || v === "" ? "—" : String(v);
-    }
-
-    function setActiveTab(which) {
-      $("studentPanel").classList.toggle("hidden", which !== "student");
-      $("adminPanel").classList.toggle("hidden", which !== "admin");
-      $("studentTab").classList.toggle("secondary", which !== "student");
-      $("adminTab").classList.toggle("secondary", which !== "admin");
-    }
-    $("studentTab").addEventListener("click", () => setActiveTab("student"));
-    $("adminTab").addEventListener("click", () => setActiveTab("admin"));
-
-    async function loadExams() {
-      const select = $("examSelect");
-      select.innerHTML = '<option value="">পরীক্ষা নির্বাচন করুন</option>';
-      try {
-        const snap = await get(ref(db, "exams"));
-        if (!snap.exists()) {
-          showStatus("studentStatus", "এখনও কোনো পরীক্ষার ফলাফল যোগ করা হয়নি।");
-          return;
-        }
-        const exams = snap.val() || {};
-        Object.entries(exams)
-          .sort((a, b) => String(b[1]?.createdAt || "").localeCompare(String(a[1]?.createdAt || "")))
-          .forEach(([id, exam]) => {
-            const opt = document.createElement("option");
-            opt.value = id;
-            opt.textContent = exam?.title || id;
-            select.appendChild(opt);
-          });
-      } catch (e) {
-        showStatus("studentStatus", "পরীক্ষার তালিকা লোড হয়নি: " + (e.message || e), "error");
-      }
-    }
-
-    $("searchBtn").addEventListener("click", async () => {
-      const examId = $("examSelect").value;
-      const roll = $("rollInput").value.trim();
-      $("resultArea").replaceChildren();
-
-      if (!examId || !roll) {
-        return showStatus("studentStatus", "পরীক্ষা নির্বাচন করুন এবং রোল নম্বর দিন।", "error");
-      }
-
-      showStatus("studentStatus", "ফলাফল খোঁজা হচ্ছে...");
-
-      try {
-        let snap = await get(ref(db, `results/${examId}/${roll}`));
-        let match = null;
-
-        if (snap.exists()) {
-          match = snap.val();
-          match.roll = roll;
-        } else {
-          const allSnap = await get(ref(db, `results/${examId}`));
-          if (allSnap.exists()) {
-            const data = allSnap.val();
-            const records = Array.isArray(data) ? data : Object.values(data || {});
-            match = records.find(r => String(r?.roll ?? "").trim() === roll);
+  // Excel / CSV parse
+  $("excelFile").addEventListener("change", async e => {
+    const file = e.target.files[0];
+    if (!file) { parsedRecords=[]; $("fileInfo").classList.add("hidden"); return; }
+    try {
+      const data = await file.arrayBuffer();
+      const wb = XLSX.read(data, {type:"array"});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(sheet, {defval:""});
+      parsedRecords = json.map(row => {
+        const roll = String(row.roll||row.Roll||row.ROLL||"").trim();
+        if (!roll) return null;
+        const gpa = {};
+        for (let i=1; i<=8; i++) {
+          const val = row[`gpa${i}`] ?? row[`GPA${i}`] ?? row[`Gpa${i}`];
+          if (val!==undefined && val!=="") {
+            const s = String(val).trim().toLowerCase();
+            gpa[i] = (s==="ref"||s==="r") ? "ref" : (isNaN(Number(val)) ? val : Number(val));
           }
         }
+        let refs = row.ref_subjects || row.ref_sub || row.Ref_Subjects || "";
+        if (typeof refs === "string") refs = refs.split(/[,;|]/).map(s=>s.trim()).filter(Boolean);
+        else if (!Array.isArray(refs)) refs = [];
+        return {
+          roll,
+          institute: String(row.institute||row.Institute||"").trim(),
+          status: String(row.status||row.Status||"Passed").trim(),
+          gpa,
+          ref_subjects: refs
+        };
+      }).filter(Boolean);
+      $("fileInfo").textContent = `ফাইল থেকে ${parsedRecords.length} টি রেকর্ড পাওয়া গেছে। এখন "সেভ করুন" চাপুন।`;
+      $("fileInfo").classList.remove("hidden");
+      showStatus("adminStatus", `${parsedRecords.length} টি রেকর্ড প্রস্তুত।`, "success");
+    } catch(err) {
+      parsedRecords = [];
+      $("fileInfo").classList.add("hidden");
+      showStatus("adminStatus", "ফাইল পড়তে সমস্যা: "+err.message, "error");
+    }
+  });
 
-        if (!match) {
-          return showStatus("studentStatus", "এই রোল নম্বরের ফলাফল পাওয়া যায়নি। রোল নম্বর যাচাই করে আবার চেষ্টা করুন।", "error");
-        }
-
-        showStatus("studentStatus", "ফলাফল পাওয়া গেছে।", "success");
-        renderResultCard(match, examId);
-      } catch (e) {
-        showStatus("studentStatus", "ফলাফল লোড হয়নি: " + (e.message || e), "error");
-      }
-    });
-
-    $("rollInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") $("searchBtn").click();
-    });
-
-    function renderResultCard(data, examId) {
-      const card = document.createElement("div");
-      card.className = "result-card";
-
-      const title = document.createElement("h3");
-      title.textContent = data.name ? safeText(data.name) : `রোল: ${safeText(data.roll)}`;
-      card.appendChild(title);
-
-      const status = (data.status || "").toLowerCase();
-      const isPass = status === "passed" || status === "pass";
-      const pill = document.createElement("span");
-      pill.className = "pill " + (isPass ? "pass" : "fail");
-      pill.textContent = isPass ? "Passed" : (data.status || "Referred");
-      card.appendChild(pill);
-
-      if (data.institute) {
-        const inst = document.createElement("p");
-        inst.className = "muted";
-        inst.style.marginTop = "6px";
-        inst.textContent = "ইনস্টিটিউট: " + data.institute;
-        card.appendChild(inst);
-      }
-
-      const gpa = data.gpa || {};
-      const gpaKeys = Object.keys(gpa).sort((a, b) => Number(a) - Number(b));
-      if (gpaKeys.length) {
-        const grid = document.createElement("div");
-        grid.className = "gpa-grid";
-        gpaKeys.forEach(sem => {
-          const box = document.createElement("div");
-          box.className = "gpa-box";
-          const label = document.createElement("div");
-          label.className = "label";
-          label.textContent = `Semester ${sem}`;
-          const value = document.createElement("div");
-          value.className = "value";
-          const val = gpa[sem];
-          if (val === "ref" || val === "Ref" || val === null) {
-            value.textContent = "Ref";
-            value.classList.add("ref");
-          } else {
-            value.textContent = val;
-          }
-          box.append(label, value);
-          grid.appendChild(box);
+  async function loadExams(){
+    const select = $("examSelect");
+    select.innerHTML = '<option value="">পরীক্ষা নির্বাচন করুন</option>';
+    try {
+      const snap = await get(ref(db,"exams"));
+      if (!snap.exists()) { showStatus("studentStatus","এখনও কোনো পরীক্ষার ফলাফল যোগ করা হয়নি।"); return; }
+      const exams = snap.val()||{};
+      Object.entries(exams).sort((a,b)=>String(b[1]?.createdAt||"").localeCompare(String(a[1]?.createdAt||"")))
+        .forEach(([id,exam])=>{
+          const opt = document.createElement("option");
+          opt.value = id; opt.textContent = exam?.title||id;
+          select.appendChild(opt);
         });
-        card.appendChild(grid);
-      }
+    } catch(e){ showStatus("studentStatus","তালিকা লোড হয়নি: "+(e.message||e),"error"); }
+  }
 
-      const refs = data.ref_subjects || data.ref_sub || [];
-      if (Array.isArray(refs) && refs.length) {
-        const refTitle = document.createElement("p");
-        refTitle.style.fontWeight = "650";
-        refTitle.style.marginTop = "8px";
-        refTitle.textContent = "Referred Subjects:";
-        card.appendChild(refTitle);
-        const refList = document.createElement("div");
-        refList.className = "ref-list";
-        refs.forEach(sub => {
-          const span = document.createElement("span");
-          span.textContent = sub;
-          refList.appendChild(span);
-        });
-        card.appendChild(refList);
-      }
-
-      get(ref(db, `exams/${examId}`)).then(examSnap => {
-        if (examSnap.exists() && examSnap.val().pdfUrl) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.style.marginTop = "14px";
-          btn.textContent = "সম্পূর্ণ রেজাল্ট PDF দেখুন / ডাউনলোড";
-          btn.addEventListener("click", () => {
-            window.open(examSnap.val().pdfUrl, "_blank");
-          });
-          card.appendChild(btn);
+  $("searchBtn").onclick = async () => {
+    const examId = $("examSelect").value;
+    const roll = $("rollInput").value.trim();
+    $("resultArea").replaceChildren();
+    if (!examId||!roll) return showStatus("studentStatus","পরীক্ষা ও রোল নম্বর দিন।","error");
+    showStatus("studentStatus","ফলাফল খোঁজা হচ্ছে...");
+    try {
+      let snap = await get(ref(db,`results/${examId}/${roll}`));
+      let match = null;
+      if (snap.exists()) { match = snap.val(); match.roll = roll; }
+      else {
+        const all = await get(ref(db,`results/${examId}`));
+        if (all.exists()) {
+          const data = all.val();
+          const arr = Array.isArray(data)?data:Object.values(data||{});
+          match = arr.find(r=>String(r?.roll??"").trim()===roll);
         }
+      }
+      if (!match) return showStatus("studentStatus","এই রোলের ফলাফল পাওয়া যায়নি।","error");
+      showStatus("studentStatus","ফলাফল পাওয়া গেছে।","success");
+      renderResultCard(match, examId);
+    } catch(e){ showStatus("studentStatus","লোড হয়নি: "+(e.message||e),"error"); }
+  };
+  $("rollInput").onkeydown = e => { if(e.key==="Enter") $("searchBtn").click(); };
+
+  function renderResultCard(data, examId){
+    const card = document.createElement("div");
+    card.className = "result-card";
+    const title = document.createElement("h3");
+    title.textContent = data.name ? safeText(data.name) : `রোল: ${safeText(data.roll)}`;
+    card.appendChild(title);
+    const status = (data.status||"").toLowerCase();
+    const isPass = status==="passed"||status==="pass";
+    const pill = document.createElement("span");
+    pill.className = "pill "+(isPass?"pass":"fail");
+    pill.textContent = isPass?"Passed":(data.status||"Referred");
+    card.appendChild(pill);
+    if (data.institute) {
+      const p = document.createElement("p");
+      p.className="muted"; p.style.marginTop="6px";
+      p.textContent="ইনস্টিটিউট: "+data.institute;
+      card.appendChild(p);
+    }
+    const gpa = data.gpa||{};
+    const keys = Object.keys(gpa).sort((a,b)=>Number(a)-Number(b));
+    if (keys.length) {
+      const grid = document.createElement("div");
+      grid.className="gpa-grid";
+      keys.forEach(sem=>{
+        const box=document.createElement("div"); box.className="gpa-box";
+        const lab=document.createElement("div"); lab.className="label"; lab.textContent=`Semester ${sem}`;
+        const val=document.createElement("div"); val.className="value";
+        const v=gpa[sem];
+        if(v==="ref"||v==="Ref"||v==null){ val.textContent="Ref"; val.classList.add("ref"); }
+        else val.textContent=v;
+        box.append(lab,val); grid.appendChild(box);
       });
-
-      $("resultArea").appendChild(card);
+      card.appendChild(grid);
     }
-
-    function updateAdminUI(user) {
-      const allowed = !!user && user.uid === ADMIN_UID;
-      $("loginArea").classList.toggle("hidden", !!user && allowed);
-      $("adminTools").classList.toggle("hidden", !allowed);
-
-      if (user && !allowed) {
-        showStatus("loginStatus", "এই অ্যাকাউন্ট অনুমোদিত Admin নয়।\\nUID: " + user.uid, "error");
-        $("loginStatus").classList.remove("hidden");
-        signOut(auth).catch(() => {});
-      } else if (allowed) {
-        showStatus("adminStatus", "Admin হিসেবে লগইন হয়েছে।", "success");
-        loadAdminExams();
-      }
+    const refs = data.ref_subjects||[];
+    if(Array.isArray(refs)&&refs.length){
+      const rt=document.createElement("p"); rt.style.fontWeight="650"; rt.style.marginTop="8px"; rt.textContent="Referred Subjects:";
+      card.appendChild(rt);
+      const rl=document.createElement("div"); rl.className="ref-list";
+      refs.forEach(s=>{ const sp=document.createElement("span"); sp.textContent=s; rl.appendChild(sp); });
+      card.appendChild(rl);
     }
-
-    $("loginBtn").addEventListener("click", async () => {
-      const email = $("adminEmail").value.trim();
-      const password = $("adminPassword").value;
-      if (!email || !password) {
-        return showStatus("loginStatus", "ইমেইল ও পাসওয়ার্ড দিন।", "error");
+    get(ref(db,`exams/${examId}`)).then(s=>{
+      if(s.exists()&&s.val().pdfUrl){
+        const btn=document.createElement("button"); btn.type="button"; btn.style.marginTop="14px";
+        btn.textContent="সম্পূর্ণ রেজাল্ট PDF দেখুন / ডাউনলোড";
+        btn.onclick=()=>window.open(s.val().pdfUrl,"_blank");
+        card.appendChild(btn);
       }
+    });
+    $("resultArea").appendChild(card);
+  }
+
+  function updateAdminUI(user){
+    const allowed = !!user && user.uid===ADMIN_UID;
+    $("loginArea").classList.toggle("hidden", !!user&&allowed);
+    $("adminTools").classList.toggle("hidden", !allowed);
+    if(user&&!allowed){
+      showStatus("loginStatus","অনুমোদিত Admin নয়। UID: "+user.uid,"error");
       $("loginStatus").classList.remove("hidden");
-      showStatus("loginStatus", "লগইন হচ্ছে...");
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (e) {
-        let msg = e.message;
-        if (e.code === "auth/invalid-credential") msg = "ইমেইল বা পাসওয়ার্ড ভুল।";
-        if (e.code === "auth/user-not-found") msg = "অ্যাকাউন্ট পাওয়া যায়নি।";
-        showStatus("loginStatus", "লগইন ব্যর্থ: " + msg, "error");
-      }
-    });
-
-    $("logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
-      showStatus("adminStatus", "লগআউট হয়েছে।");
-    });
-
-    function validExamId(id) {
-      return /^[a-zA-Z0-9_-]{2,80}$/.test(id);
+      signOut(auth).catch(()=>{});
+    } else if(allowed){
+      showStatus("adminStatus","Admin হিসেবে লগইন হয়েছে।","success");
+      loadAdminExams();
     }
+  }
 
-    $("saveBtn").addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user || user.uid !== ADMIN_UID) {
-        return showStatus("adminStatus", "অনুমোদিত Admin হিসেবে লগইন করুন।", "error");
-      }
-
-      const id = $("examId").value.trim();
-      const title = $("examTitle").value.trim();
-      const pdfUrl = $("pdfLink").value.trim() || null;
-
-      if (!validExamId(id)) {
-        return showStatus("adminStatus", "পরীক্ষার ID ২–৮০ অক্ষরের ইংরেজি অক্ষর, সংখ্যা, - বা _ দিয়ে লিখুন।", "error");
-      }
-      if (!title) {
-        return showStatus("adminStatus", "পরীক্ষার নাম দিন।", "error");
-      }
-
-      let records;
-      try {
-        records = JSON.parse($("jsonInput").value || "[]");
-      } catch (e) {
-        return showStatus("adminStatus", "JSON বৈধ নয়: " + e.message, "error");
-      }
-
-      if (!Array.isArray(records)) {
-        return showStatus("adminStatus", "JSON অবশ্যই একটি Array হতে হবে।", "error");
-      }
-
-      showStatus("adminStatus", "সেভ করা হচ্ছে...");
-
-      try {
-        const now = new Date().toISOString();
-        const examData = { title, createdAt: now };
-        if (pdfUrl) examData.pdfUrl = pdfUrl;
-
-        if (!pdfUrl) {
-          const old = await get(ref(db, `exams/${id}`));
-          if (old.exists() && old.val().pdfUrl) examData.pdfUrl = old.val().pdfUrl;
-        }
-
-        await set(ref(db, `exams/${id}`), examData);
-
-        const resultsObj = {};
-        records.forEach(r => {
-          if (!r || r.roll == null) return;
-          const roll = String(r.roll).trim();
-          resultsObj[roll] = { ...r, roll };
-        });
-
-        await set(ref(db, `results/${id}`), resultsObj);
-
-        showStatus("adminStatus", `সফলভাবে সেভ হয়েছে! মোট ${Object.keys(resultsObj).length} টি ফলাফল।`, "success");
-        await loadExams();
-        await loadAdminExams();
-      } catch (e) {
-        showStatus("adminStatus", "সেভ ব্যর্থ: " + (e.message || e), "error");
-      }
-    });
-
-    $("refreshBtn").addEventListener("click", async () => {
-      await loadExams();
-      await loadAdminExams();
-    });
-
-    async function loadAdminExams() {
-      const list = $("examList");
-      list.replaceChildren();
-      try {
-        const snap = await get(ref(db, "exams"));
-        if (!snap.exists()) {
-          list.innerHTML = '<p class="muted">এখনও কোনো পরীক্ষা নেই।</p>';
-          return;
-        }
-
-        const table = document.createElement("table");
-        table.innerHTML = `<thead><tr><th>পরীক্ষার নাম</th><th>ID</th><th>PDF লিংক</th><th>কাজ</th></tr></thead>`;
-        const tbody = document.createElement("tbody");
-
-        Object.entries(snap.val() || {}).forEach(([id, exam]) => {
-          const tr = document.createElement("tr");
-
-          const titleTd = document.createElement("td");
-          titleTd.textContent = exam?.title || id;
-
-          const idTd = document.createElement("td");
-          idTd.textContent = id;
-
-          const pdfTd = document.createElement("td");
-          pdfTd.textContent = exam?.pdfUrl ? "আছে" : "—";
-
-          const actionTd = document.createElement("td");
-
-          const editBtn = document.createElement("button");
-          editBtn.type = "button";
-          editBtn.className = "secondary";
-          editBtn.textContent = "এডিট";
-          editBtn.style.marginRight = "6px";
-          editBtn.addEventListener("click", async () => {
-            $("examId").value = id;
-            $("examTitle").value = exam?.title || id;
-            $("pdfLink").value = exam?.pdfUrl || "";
-            try {
-              const rSnap = await get(ref(db, `results/${id}`));
-              const data = rSnap.exists() ? rSnap.val() : {};
-              const arr = Array.isArray(data) ? data : Object.values(data || {});
-              $("jsonInput").value = JSON.stringify(arr, null, 2);
-              showStatus("adminStatus", "এডিটের জন্য ডেটা লোড হয়েছে। সেভ করলে আপডেট হবে।");
-            } catch (e) {
-              showStatus("adminStatus", e.message, "error");
-            }
-          });
-
-          const delBtn = document.createElement("button");
-          delBtn.type = "button";
-          delBtn.className = "danger";
-          delBtn.textContent = "মুছুন";
-          delBtn.addEventListener("click", async () => {
-            if (!confirm(`"${exam?.title || id}" এবং এর সব ফলাফল মুছে ফেলবেন?`)) return;
-            try {
-              await remove(ref(db, `exams/${id}`));
-              await remove(ref(db, `results/${id}`));
-              showStatus("adminStatus", "মুছে ফেলা হয়েছে।", "success");
-              await loadExams();
-              await loadAdminExams();
-            } catch (e) {
-              showStatus("adminStatus", "মুছতে ব্যর্থ: " + e.message, "error");
-            }
-          });
-
-          actionTd.append(editBtn, delBtn);
-          tr.append(titleTd, idTd, pdfTd, actionTd);
-          tbody.appendChild(tr);
-        });
-
-        table.appendChild(tbody);
-        list.appendChild(table);
-      } catch (e) {
-        list.textContent = "তালিকা লোড হয়নি: " + (e.message || e);
-      }
+  $("loginBtn").onclick = async ()=>{
+    const email=$("adminEmail").value.trim();
+    const pass=$("adminPassword").value;
+    if(!email||!pass) return showStatus("loginStatus","ইমেইল ও পাসওয়ার্ড দিন।","error");
+    $("loginStatus").classList.remove("hidden");
+    showStatus("loginStatus","লগইন হচ্ছে...");
+    try{ await signInWithEmailAndPassword(auth,email,pass); }
+    catch(e){
+      let msg=e.message;
+      if(e.code==="auth/invalid-credential") msg="ইমেইল বা পাসওয়ার্ড ভুল।";
+      showStatus("loginStatus","লগইন ব্যর্থ: "+msg,"error");
     }
+  };
+  $("logoutBtn").onclick = async ()=>{ await signOut(auth); showStatus("adminStatus","লগআউট হয়েছে।"); };
 
-    onAuthStateChanged(auth, (user) => updateAdminUI(user));
-    loadExams();
-  </script>
+  function validExamId(id){ return /^[a-zA-Z0-9_-]{2,80}$/.test(id); }
+
+  $("saveBtn").onclick = async ()=>{
+    const user=auth.currentUser;
+    if(!user||user.uid!==ADMIN_UID) return showStatus("adminStatus","Admin হিসেবে লগইন করুন।","error");
+    const id=$("examId").value.trim();
+    const title=$("examTitle").value.trim();
+    const pdfUrl=$("pdfLink").value.trim()||null;
+    if(!validExamId(id)) return showStatus("adminStatus","পরীক্ষার ID সঠিক নয়।","error");
+    if(!title) return showStatus("adminStatus","পরীক্ষার নাম দিন।","error");
+    if(parsedRecords.length===0) return showStatus("adminStatus","আগে Excel/CSV ফাইল আপলোড করুন।","error");
+    showStatus("adminStatus","সেভ করা হচ্ছে...");
+    try{
+      const now=new Date().toISOString();
+      const examData={title,createdAt:now};
+      if(pdfUrl) examData.pdfUrl=pdfUrl;
+      if(!pdfUrl){
+        const old=await get(ref(db,`exams/${id}`));
+        if(old.exists()&&old.val().pdfUrl) examData.pdfUrl=old.val().pdfUrl;
+      }
+      await set(ref(db,`exams/${id}`),examData);
+      const resultsObj={};
+      parsedRecords.forEach(r=>{ resultsObj[r.roll]=r; });
+      await set(ref(db,`results/${id}`),resultsObj);
+      showStatus("adminStatus",`সফলভাবে সেভ হয়েছে! মোট ${parsedRecords.length} টি ফলাফল।`,"success");
+      $("excelFile").value=""; $("fileInfo").classList.add("hidden"); parsedRecords=[];
+      await loadExams(); await loadAdminExams();
+    }catch(e){ showStatus("adminStatus","সেভ ব্যর্থ: "+(e.message||e),"error"); }
+  };
+
+  $("refreshBtn").onclick = async ()=>{ await loadExams(); await loadAdminExams(); };
+
+  async function loadAdminExams(){
+    const list=$("examList"); list.replaceChildren();
+    try{
+      const snap=await get(ref(db,"exams"));
+      if(!snap.exists()){ list.innerHTML='<p class="muted">এখনও কোনো পরীক্ষা নেই।</p>'; return; }
+      const table=document.createElement("table");
+      table.innerHTML=`<thead><tr><th>পরীক্ষার নাম</th><th>ID</th><th>PDF</th><th>কাজ</th></tr></thead>`;
+      const tbody=document.createElement("tbody");
+      Object.entries(snap.val()||{}).forEach(([id,exam])=>{
+        const tr=document.createElement("tr");
+        const t1=document.createElement("td"); t1.textContent=exam?.title||id;
+        const t2=document.createElement("td"); t2.textContent=id;
+        const t3=document.createElement("td"); t3.textContent=exam?.pdfUrl?"আছে":"—";
+        const t4=document.createElement("td");
+        const del=document.createElement("button"); del.type="button"; del.className="danger"; del.textContent="মুছুন";
+        del.onclick=async()=>{
+          if(!confirm(`"${exam?.title||id}" মুছে ফেলবেন?`)) return;
+          try{
+            await remove(ref(db,`exams/${id}`));
+            await remove(ref(db,`results/${id}`));
+            showStatus("adminStatus","মুছে ফেলা হয়েছে।","success");
+            await loadExams(); await loadAdminExams();
+          }catch(e){ showStatus("adminStatus","মুছতে ব্যর্থ: "+e.message,"error"); }
+        };
+        t4.appendChild(del);
+        tr.append(t1,t2,t3,t4); tbody.appendChild(tr);
+      });
+      table.appendChild(tbody); list.appendChild(table);
+    }catch(e){ list.textContent="লোড হয়নি: "+(e.message||e); }
+  }
+
+  onAuthStateChanged(auth, user => updateAdminUI(user));
+  loadExams();
+</script>
 </body>
 </html>
